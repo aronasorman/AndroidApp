@@ -1,6 +1,7 @@
 package org.learningequality.androidapp;
 
 import android.app.Activity;
+import android.app.FragmentBreadCrumbs;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -48,6 +49,10 @@ public class NodeListActivity extends Activity
             ((NodeListFragment) getFragmentManager()
                     .findFragmentById(R.id.node_list))
                     .setActivateOnItemClick(true);
+
+            // boilerplate for initializing the breadcrumbs
+            FragmentBreadCrumbs crumbs = (FragmentBreadCrumbs) findViewById(R.id.breadcrumbs);
+            crumbs.setActivity(this);
         }
 
         // TODO: If exposing deep links into your app, handle intents here.
@@ -74,6 +79,8 @@ public class NodeListActivity extends Activity
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
                     .replace(R.id.node_detail_container, fragment)
+                    .setBreadCrumbTitle(id)
+                    .addToBackStack(null)
                     .commit();
 
         } else {
