@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.learningequality.androidapp.dummy.ContentLoad;
+import org.learningequality.androidapp.contentload.ContentLoad;
 
 import java.io.File;
 
@@ -127,6 +127,8 @@ public class NodeListFragment extends ListFragment {
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
 
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setItemChecked(position, true);
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
         mCallbacks.onItemSelected(directoryContents.ITEMS.get(position).file);

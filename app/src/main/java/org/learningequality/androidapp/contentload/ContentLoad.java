@@ -1,4 +1,4 @@
-package org.learningequality.androidapp.dummy;
+package org.learningequality.androidapp.contentload;
 
 import android.os.Environment;
 
