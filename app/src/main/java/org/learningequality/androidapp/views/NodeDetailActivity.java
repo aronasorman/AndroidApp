@@ -1,10 +1,12 @@
-package org.learningequality.androidapp;
+package org.learningequality.androidapp.views;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+
+import org.learningequality.androidapp.R;
 
 
 /**

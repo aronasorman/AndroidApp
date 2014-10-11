@@ -1,4 +1,4 @@
-package org.learningequality.androidapp;
+package org.learningequality.androidapp.views;
 
 import android.app.Activity;
 import android.app.ListFragment;

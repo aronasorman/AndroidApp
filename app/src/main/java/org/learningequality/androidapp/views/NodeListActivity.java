@@ -1,4 +1,4 @@
-package org.learningequality.androidapp;
+package org.learningequality.androidapp.views;
 
 import android.app.Activity;
 import android.app.FragmentBreadCrumbs;
@@ -6,6 +6,8 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+
+import org.learningequality.androidapp.R;
 
 import java.io.File;
 
