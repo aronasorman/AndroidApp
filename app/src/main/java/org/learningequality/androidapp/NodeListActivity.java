@@ -2,9 +2,12 @@ package org.learningequality.androidapp;
 
 import android.app.Activity;
 import android.app.FragmentBreadCrumbs;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+
+import java.io.File;
 
 
 /**
@@ -44,11 +47,10 @@ public class NodeListActivity extends Activity
             // activity should be in two-pane mode.
             mTwoPane = true;
 
-            // In two-pane mode, list items should be given the
-            // 'activated' state when touched.
-            ((NodeListFragment) getFragmentManager()
-                    .findFragmentById(R.id.node_list))
-                    .setActivateOnItemClick(true);
+            NodeListFragment fragment = new NodeListFragment();
+            getFragmentManager().beginTransaction()
+                                .replace(R.id.node_list_container, fragment)
+                                .commit();
 
             // boilerplate for initializing the breadcrumbs
             FragmentBreadCrumbs crumbs = (FragmentBreadCrumbs) findViewById(R.id.breadcrumbs);
@@ -66,20 +68,37 @@ public class NodeListActivity extends Activity
     /**
      * Callback method from {@link NodeListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
+     * @param file
      */
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(File file) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
+
             Bundle arguments = new Bundle();
-            arguments.putString(NodeDetailFragment.ARG_ITEM_ID, id);
-            NodeDetailFragment fragment = new NodeDetailFragment();
+
+
+            android.app.Fragment fragment;
+            int id_to_replace;
+
+             if (file.isDirectory()) {
+                fragment = new NodeListFragment();
+                arguments.putString(NodeListFragment.ARG_TOPIC_PATH_ID, file.getAbsolutePath());
+                id_to_replace = R.id.node_list_container;
+             } else {
+                 fragment = new NodeDetailFragment();
+                 arguments.putString(NodeDetailFragment.ARG_TOPIC_PATH_ID, file.getAbsolutePath());
+                 id_to_replace = R.id.node_detail_container;
+             }
+
+
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
-                    .replace(R.id.node_detail_container, fragment)
-                    .setBreadCrumbTitle(id)
+                    .replace(id_to_replace, fragment)
+                    .setBreadCrumbTitle(file.getName())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
 
@@ -87,7 +106,7 @@ public class NodeListActivity extends Activity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, NodeDetailActivity.class);
-            detailIntent.putExtra(NodeDetailFragment.ARG_ITEM_ID, id);
+            detailIntent.putExtra(NodeDetailFragment.ARG_TOPIC_PATH_ID, file);
             startActivity(detailIntent);
         }
     }

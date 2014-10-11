@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.learningequality.androidapp.dummy.ContentLoad;
+import java.io.File;
 
 /**
  * A fragment representing a single Node detail screen.
@@ -20,12 +20,14 @@ public class NodeDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_TOPIC_PATH_ID = "org.fle.android_app.node_detail.topic_path";
+
+    private File mFile;
 
     /**
-     * The dummy content this fragment is presenting.
+     * The dummy file this fragment is presenting.
      */
-    private ContentLoad.Node mItem;
+//    private ContentLoad.Node mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -38,12 +40,8 @@ public class NodeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = ContentLoad.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        }
+        String filePath = getArguments().getString(ARG_TOPIC_PATH_ID);
+        mFile = new File(filePath);
     }
 
     @Override
@@ -51,10 +49,8 @@ public class NodeDetailFragment extends Fragment {
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_node_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.node_detail)).setText(mItem.content);
-        }
+        TextView tv = (TextView) rootView.findViewById(R.id.node_detail);
+        tv.setText(mFile.getName());
 
         return rootView;
     }

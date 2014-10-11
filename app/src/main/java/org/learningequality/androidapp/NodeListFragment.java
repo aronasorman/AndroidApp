@@ -9,6 +9,8 @@ import android.widget.ListView;
 
 import org.learningequality.androidapp.dummy.ContentLoad;
 
+import java.io.File;
+
 /**
  * A list fragment representing a list of Nodes. This fragment
  * also supports tablet devices by allowing list items to be given an
@@ -26,11 +28,15 @@ public class NodeListFragment extends ListFragment {
      */
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
+    public static final String ARG_TOPIC_PATH_ID = "org.fle.android.root_directory_path";
+
     /**
      * The fragment's current callback object, which is notified of list item
      * clicks.
      */
     private Callbacks mCallbacks = sDummyCallbacks;
+
+    private ContentLoad directoryContents;
 
     /**
      * The current activated item position. Only used on tablets.
@@ -45,8 +51,9 @@ public class NodeListFragment extends ListFragment {
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
+         * @param file
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(File file);
     }
 
     /**
@@ -55,7 +62,7 @@ public class NodeListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(File file) {
         }
     };
 
@@ -70,12 +77,19 @@ public class NodeListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: replace with a real list adapter.
+        Bundle args = getArguments();
+
+        if (args != null && args.containsKey(ARG_TOPIC_PATH_ID)) {
+            directoryContents = new ContentLoad(new File(getArguments().getString(ARG_TOPIC_PATH_ID)));
+        } else {
+            directoryContents = new ContentLoad();
+        }
+
         setListAdapter(new ArrayAdapter<ContentLoad.Node>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                ContentLoad.ITEMS));
+                directoryContents.ITEMS));
     }
 
     @Override
@@ -115,7 +129,7 @@ public class NodeListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(ContentLoad.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(directoryContents.ITEMS.get(position).file);
     }
 
     @Override

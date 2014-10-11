@@ -39,8 +39,8 @@ public class NodeDetailActivity extends Activity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(NodeDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(NodeDetailFragment.ARG_ITEM_ID));
+            arguments.putString(NodeDetailFragment.ARG_TOPIC_PATH_ID,
+                    getIntent().getStringExtra(NodeDetailFragment.ARG_TOPIC_PATH_ID));
             NodeDetailFragment fragment = new NodeDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
