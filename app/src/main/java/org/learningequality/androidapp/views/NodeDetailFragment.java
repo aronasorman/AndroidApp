@@ -11,12 +11,14 @@ import org.learningequality.androidapp.R;
 
 import java.io.File;
 
+//import org.learningequality.androidapp.R;
+
 /**
- * A fragment representing a single Node detail screen.
- * This fragment is either contained in a {@link NodeListActivity}
- * in two-pane mode (on tablets) or a {@link NodeDetailActivity}
- * on handsets.
- */
+* A fragment representing a single Node detail screen.
+* This fragment is either contained in a {@link NodeListActivity}
+* in two-pane mode (on tablets) or a {@link NodeDetailActivity}
+* on handsets.
+*/
 public class NodeDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
@@ -48,7 +50,7 @@ public class NodeDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_node_detail, container, false);
 
         TextView tv = (TextView) rootView.findViewById(R.id.node_detail);

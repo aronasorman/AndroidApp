@@ -1,40 +1,20 @@
 package org.learningequality.androidapp.views;
 
 import android.app.Activity;
-import android.app.FragmentBreadCrumbs;
 import android.app.FragmentTransaction;
-import android.content.Intent;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.view.Menu;
+import android.widget.RelativeLayout;
 
 import org.learningequality.androidapp.R;
 
 import java.io.File;
 
-
-/**
- * An activity representing a list of Nodes. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link NodeDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- * <p>
- * The activity makes heavy use of fragments. The list of items is a
- * {@link NodeListFragment} and the item details
- * (if present) is a {@link NodeDetailFragment}.
- * <p>
- * This activity also implements the required
- * {@link NodeListFragment.Callbacks} interface
- * to listen for item selections.
- */
 public class NodeListActivity extends Activity
-        implements NodeListFragment.Callbacks {
+        implements NodeListFragment.OnNodeSelectedListener {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
+    int id = 0;
+
     private boolean mTwoPane;
 
     @Override
@@ -42,74 +22,93 @@ public class NodeListActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node_list);
 
-        if (findViewById(R.id.node_detail_container) != null) {
+ //       if (findViewById(R.id.node_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
             // res/values-sw600dp). If this view is present, then the
             // activity should be in two-pane mode.
             mTwoPane = true;
-
-            NodeListFragment fragment = new NodeListFragment();
-            getFragmentManager().beginTransaction()
-                                .replace(R.id.node_list_container, fragment)
-                                .commit();
-
-            // boilerplate for initializing the breadcrumbs
-            FragmentBreadCrumbs crumbs = (FragmentBreadCrumbs) findViewById(R.id.breadcrumbs);
-            crumbs.setActivity(this);
-        }
-
-        // TODO: If exposing deep links into your app, handle intents here.
+            addNodeList();
+   //     }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
+    public void onNodeSelected(int fragID, File file) {
+        if(file.isDirectory()) {
+            if (fragID == id) {
+                addNodeList(file);
+            } else {
+                //
+                for (int i = fragID + 1; i <= id; i++) {
+                    Fragment tobeRemoved = getFragmentManager().findFragmentById(i);
+                    getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                            .remove(tobeRemoved).commit();
+                }
+                id = fragID;
+                addNodeList(file);
+            }
+        }else{
+            for (int i = fragID + 1; i <= id; i++) {
+                Fragment tobeRemoved = getFragmentManager().findFragmentById(i);
+                getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .remove(tobeRemoved).commit();
+            }
+            id = fragID;
 
-    /**
-     * Callback method from {@link NodeListFragment.Callbacks}
-     * indicating that the item with the given ID was selected.
-     * @param file
-     */
-    @Override
-    public void onItemSelected(File file) {
-        if (mTwoPane) {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
+            RelativeLayout contentlayout = (RelativeLayout)findViewById(R.id.content_layout);
+            contentlayout.setX(200*id);
 
             Bundle arguments = new Bundle();
-
-
-            android.app.Fragment fragment;
             int id_to_replace;
-
-             if (file.isDirectory()) {
-                fragment = new NodeListFragment();
-                arguments.putString(NodeListFragment.ARG_TOPIC_PATH_ID, file.getAbsolutePath());
-                id_to_replace = R.id.node_list_container;
-             } else {
-                 fragment = new NodeDetailFragment();
-                 arguments.putString(NodeDetailFragment.ARG_TOPIC_PATH_ID, file.getAbsolutePath());
-                 id_to_replace = R.id.node_detail_container;
-             }
-
-
+            Fragment fragment = new NodeDetailFragment();
+            arguments.putString(NodeDetailFragment.ARG_TOPIC_PATH_ID, file.getAbsolutePath());
+            id_to_replace = R.id.node_detail_container;
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
                     .replace(id_to_replace, fragment)
-                    .setBreadCrumbTitle(file.getName())
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                //    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
-
-        } else {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-            Intent detailIntent = new Intent(this, NodeDetailActivity.class);
-            detailIntent.putExtra(NodeDetailFragment.ARG_TOPIC_PATH_ID, file);
-            startActivity(detailIntent);
         }
     }
+
+    public void addNodeList(File file){
+        Bundle arguments = new Bundle();
+        RelativeLayout newRelativeLayout = new RelativeLayout(this);
+        id++;
+        newRelativeLayout.setId(id);
+
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                200, RelativeLayout.LayoutParams.MATCH_PARENT);
+        rlp.addRule(RelativeLayout.RIGHT_OF, id-1);
+        newRelativeLayout.setLayoutParams(rlp);
+
+        RelativeLayout rootLayout = (RelativeLayout)findViewById(R.id.root_layout);
+        rootLayout.addView(newRelativeLayout);
+
+        NodeListFragment newListFragment = new NodeListFragment();
+        arguments.putString(NodeListFragment.ARG_TOPIC_PATH_ID, file.getAbsolutePath());
+        newListFragment.setArguments(arguments);
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(newRelativeLayout.getId(), newListFragment).commit();
+    }
+
+    public void addNodeList(){
+        RelativeLayout newRelativeLayout = new RelativeLayout(this);
+        id++;
+        newRelativeLayout.setId(id);
+
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                200, RelativeLayout.LayoutParams.MATCH_PARENT);
+        rlp.addRule(RelativeLayout.RIGHT_OF, id-1);
+        newRelativeLayout.setLayoutParams(rlp);
+
+        RelativeLayout rootLayout = (RelativeLayout)findViewById(R.id.root_layout);
+        rootLayout.addView(newRelativeLayout);
+
+        NodeListFragment newListFragment = new NodeListFragment();
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(newRelativeLayout.getId(), newListFragment).commit();
+    }
+
 }

@@ -1,23 +1,25 @@
 package org.learningequality.androidapp.views;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import org.learningequality.androidapp.R;
 
+//import android.support.v4.app.NavUtils;
+
+//import org.learningequality.androidapp.R;
+
 
 /**
- * An activity representing a single Node detail screen. This
- * activity is only used on handset devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link NodeListActivity}.
- * <p>
- * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link NodeDetailFragment}.
- */
+* An activity representing a single Node detail screen. This
+* activity is only used on handset devices. On tablet-size devices,
+* item details are presented side-by-side with a list of items
+* in a {@link NodeListActivity}.
+* <p>
+* This activity is mostly just a 'shell' activity containing nothing
+* more than a {@link NodeDetailFragment}.
+*/
 public class NodeDetailActivity extends Activity {
 
     @Override
@@ -62,7 +64,7 @@ public class NodeDetailActivity extends Activity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, NodeListActivity.class));
+        //    NavUtils.navigateUpTo(this, new Intent(this, NodeListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
