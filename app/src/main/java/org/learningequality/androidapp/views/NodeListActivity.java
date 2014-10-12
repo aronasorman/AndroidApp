@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.learningequality.androidapp.R;
 
@@ -18,43 +20,77 @@ public class NodeListActivity extends Activity
 
     int id = 0;
     static int menu_width = 200;
+    int screen_width = 0;
 
     private boolean mTwoPane;
 
     private RelativeLayout contentlayout;
     private RelativeLayout root_list;
 
+    //for testing only
+    TextView dispaly;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node_list);
 
- //       if (findViewById(R.id.node_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-large and
-            // res/values-sw600dp). If this view is present, then the
-            // activity should be in two-pane mode.
+        if (findViewById(R.id.node_detail_container) != null) {
+//            The detail container view will be present only in the
+//            large-screen layouts (res/values-large and
+//            res/values-sw600dp). If this view is present, then the
+//            activity should be in two-pane mode.
             mTwoPane = true;
             contentlayout = (RelativeLayout)findViewById(R.id.content_layout);
             root_list = (RelativeLayout)findViewById(R.id.root_layout);
+
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screen_width = size.x;
+
+            dispaly = (TextView)findViewById(R.id.display);
+
             addNodeList();
-   //     }
+        }
     }
 
-    //int root_layout_id = 1;
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+    }
+
     float mPreviousX = 0;
+    float mCurrentX = 0;
     float moving;
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        float x = e.getX();
+        mCurrentX = e.getX();
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                //float s = (int)(x - mPreviousX);
-                //root_list.getX()
-                moving += x - mPreviousX;
-                root_list.setX(moving);
+                float i = mCurrentX - mPreviousX;
+
+//                //for testing only
+//                float sum = root_list.getWidth() - root_list.getX() - screen_width;
+//                dispaly.setText(" | posX: " + root_list.getX() + " moving: "+ moving
+//                        + " | sum: " + sum + " | i: " + i + "      width: "+root_list.getWidth());
+
+                if(root_list.getX() < 0 || i < 0) {
+                    if(root_list.getX() > -menu_width*(id-1) || i > 0) {
+                        moving += i;
+                        if(moving > 0){
+                            root_list.setX(0);
+                        }else if(moving < -menu_width*(id-1)) {
+                            root_list.setX(-menu_width*(id-1));
+                        }else{
+                                root_list.setX(moving);
+                        }
+                    }
+                }
+                break;
         }
-        mPreviousX = x;
+        mPreviousX = mCurrentX;
         return true;
     }
 
@@ -146,7 +182,7 @@ public class NodeListActivity extends Activity
 
         NodeListFragment newListFragment = new NodeListFragment();
         getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(newRelativeLayout.getId(), newListFragment).commit();
+                .replace(newRelativeLayout.getId(), newListFragment).commit();
     }
 
 }
