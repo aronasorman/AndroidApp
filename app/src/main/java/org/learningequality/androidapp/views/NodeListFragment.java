@@ -11,17 +11,51 @@ import org.learningequality.androidapp.contentload.ContentLoad;
 
 import java.io.File;
 
-
 /**
  * A simple {@link android.app.ListFragment} subclass.
  *
  */
-public class NodeListFragment extends ListFragment {
+public class NodeListFragment extends ListFragment{
     OnNodeSelectedListener mListener;
 
     private ContentLoad myNode;
 
     public static final String ARG_TOPIC_PATH_ID = "org.fle.android.root_directory_path";
+
+//    float mPreviousX = 0;
+//    float mCurrentX = 0;
+//    float moving;
+//    static int menu_width = 200;
+//    @Override
+//    public boolean onTouch(View view, MotionEvent motionEvent) {
+//        Toast.makeText(getActivity(), "elieli", Toast.LENGTH_LONG).show();
+//        mCurrentX = motionEvent.getX();
+//        switch (motionEvent.getAction()) {
+//            case MotionEvent.ACTION_MOVE:
+//                float i = mCurrentX - mPreviousX;
+//
+////                //for testing only
+////                float sum = root_list.getWidth() - root_list.getX() - screen_width;
+////                dispaly.setText(" | posX: " + root_list.getX() + " moving: "+ moving
+////                        + " | sum: " + sum + " | i: " + i + "      width: "+root_list.getWidth());
+//                RelativeLayout root_list = (RelativeLayout)getActivity().findViewById(R.id.root_layout);
+//                if(root_list.getX() < 0 || i < 0) {
+//                    if(root_list.getX() > -menu_width*(2-1) || i > 0) {
+//                        moving += i;
+//                        if(moving > 0){
+//                            root_list.setX(0);
+//                        }else if(moving < -menu_width*(2-1)) {
+//                            root_list.setX(-menu_width*(2-1));
+//                        }else{
+//                            root_list.setX(moving);
+//                        }
+//                    }
+//                }
+//                break;
+//        }
+//        mPreviousX = mCurrentX;
+//        return true;
+//    }
 
     public interface OnNodeSelectedListener{
         public void onNodeSelected(int fragID, File file);
@@ -37,8 +71,6 @@ public class NodeListFragment extends ListFragment {
                     + " must implement OnNodeSelectedListener");
         }
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
